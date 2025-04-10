@@ -6,7 +6,6 @@ loadProducts(renderProductsGrid);
 
 function renderProductsGrid() {
   let productsHTML = '';
-
   products.forEach((product) => {
     productsHTML += `
       <div class="product-container">
@@ -32,7 +31,7 @@ function renderProductsGrid() {
         </div>
 
         <div class="product-quantity-container">
-          <select class = "js-option-value">
+          <select class = "js-quantity-selector-${product.id}">
             <option selected value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -50,7 +49,7 @@ function renderProductsGrid() {
 
         <div class="product-spacer"></div>
 
-        <div class="added-to-cart">
+        <div class="added-to-cart js-added-to-cart-${product.id}">
           <img src="images/icons/checkmark.png">
           Added
         </div>
@@ -64,12 +63,7 @@ function renderProductsGrid() {
   });
 
   document.querySelector('.js-products-grid').innerHTML = productsHTML;
-
-  function getSelectedValue(){
-    const select = document.querySelector(".js-option-value")
-    const value = select.value
-    console.log(value)
-  }
+  
 
   function updateCartQuantity() {
     let cartQuantity = 0;
@@ -80,13 +74,30 @@ function renderProductsGrid() {
 
     document.querySelector('.js-cart-quantity')
       .innerHTML = cartQuantity;
-  }
+  };
 
   document.querySelectorAll('.js-add-to-cart')
     .forEach((button) => {
+      let addedTimeoutId;
+      
       button.addEventListener('click', () => {
         const productId = button.dataset.productId;
-        addToCart(productId);
+        const selectedValue = Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
+        
+        let element = document.querySelector(`.js-added-to-cart-${productId}`)
+        element.classList.add("js-added-to-cart")
+
+        if(addedTimeoutId){
+          clearTimeout(addedTimeoutId);
+        }
+
+        const timeoutId = setTimeout(()=>{
+          element.classList.remove('js-added-to-cart')
+        }, 2000);
+
+        addedTimeoutId = timeoutId;
+
+        addToCart(productId, selectedValue);
         updateCartQuantity();
       });
     });
