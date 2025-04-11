@@ -11,7 +11,7 @@ export function renderOrderSummary() {
 
   cart.forEach((cartItem) => {
     const productId = cartItem.productId;
-
+        
     const matchingProduct = getProduct(productId);
 
     const deliveryOptionId = cartItem.deliveryOptionId;
@@ -26,7 +26,6 @@ export function renderOrderSummary() {
     const dateString = deliveryDate.format(
       'dddd, MMMM D'
     );
-
     cartSummaryHTML += `
       <div class="cart-item-container
         js-cart-item-container
@@ -118,6 +117,15 @@ export function renderOrderSummary() {
   document.querySelector('.js-order-summary')
     .innerHTML = cartSummaryHTML;
 
+  function updateCheckout(){
+    let cartQuantity = 0
+    cart.forEach((cartItem)=>{
+    cartQuantity += cartItem.quantity;
+    document.querySelector('.js-top-items').innerHTML = ' ('+ cartQuantity +' items'+')'
+    });
+  };
+  updateCheckout();
+
   document.querySelectorAll('.js-delete-link')
     .forEach((link) => {
       link.addEventListener('click', () => {
@@ -128,7 +136,7 @@ export function renderOrderSummary() {
           `.js-cart-item-container-${productId}`
         );
         container.remove();
-
+        updateCheckout();
         renderPaymentSummary();
       });
     });
@@ -142,4 +150,6 @@ export function renderOrderSummary() {
         renderPaymentSummary();
       });
     });
+
+
 }
