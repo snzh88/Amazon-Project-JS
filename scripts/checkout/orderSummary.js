@@ -121,8 +121,13 @@ export function renderOrderSummary() {
     let cartQuantity = 0
     cart.forEach((cartItem)=>{
     cartQuantity += cartItem.quantity;
-    document.querySelector('.js-top-items').innerHTML = ' ('+ cartQuantity +' items'+')'
     });
+    if (cartQuantity === 1) {
+      document.querySelector('.js-top-items').innerHTML = ' ('+ cartQuantity +' item'+')';
+    } else {
+      document.querySelector('.js-top-items').innerHTML = ' ('+ cartQuantity +' items'+')';
+
+    }
   };
   updateCheckout();
 
