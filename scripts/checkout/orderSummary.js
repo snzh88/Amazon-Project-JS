@@ -8,6 +8,7 @@ import {renderPaymentSummary} from './paymentSummary.js';
 
 export function renderOrderSummary() {
   let cartSummaryHTML = '';
+  let cartAmount = 0;
 
   cart.forEach((cartItem) => {
     const productId = cartItem.productId;
@@ -26,6 +27,8 @@ export function renderOrderSummary() {
     const dateString = deliveryDate.format(
       'dddd, MMMM D'
     );
+    cartAmount += cartItem.quantity;
+
     cartSummaryHTML += `
       <div class="cart-item-container
         js-cart-item-container
@@ -112,10 +115,15 @@ export function renderOrderSummary() {
     });
 
     return html;
-  }
+  };
 
-  document.querySelector('.js-order-summary')
+  if (cartAmount === 0) {
+    document.querySelector('.js-order-summary')
+    .innerHTML = "Go to main page";
+  } else {
+    document.querySelector('.js-order-summary')
     .innerHTML = cartSummaryHTML;
+  }
 
   function updateCheckout(){
     let cartQuantity = 0
