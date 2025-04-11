@@ -8,10 +8,11 @@ import {renderPaymentSummary} from './paymentSummary.js';
 
 export function renderOrderSummary() {
   let cartSummaryHTML = '';
+  let cartAmount = 0;
 
   cart.forEach((cartItem) => {
     const productId = cartItem.productId;
-
+        
     const matchingProduct = getProduct(productId);
 
     const deliveryOptionId = cartItem.deliveryOptionId;
@@ -26,6 +27,7 @@ export function renderOrderSummary() {
     const dateString = deliveryDate.format(
       'dddd, MMMM D'
     );
+    cartAmount += cartItem.quantity;
 
     cartSummaryHTML += `
       <div class="cart-item-container
@@ -113,10 +115,29 @@ export function renderOrderSummary() {
     });
 
     return html;
+  };
+
+  if (cartAmount === 0) {
+    document.querySelector('.js-order-summary')
+    .innerHTML = "Go to main page";
+  } else {
+    document.querySelector('.js-order-summary')
+    .innerHTML = cartSummaryHTML;
   }
 
-  document.querySelector('.js-order-summary')
-    .innerHTML = cartSummaryHTML;
+  function updateCheckout(){
+    let cartQuantity = 0
+    cart.forEach((cartItem)=>{
+    cartQuantity += cartItem.quantity;
+    });
+    if (cartQuantity === 1) {
+      document.querySelector('.js-top-items').innerHTML = ' ('+ cartQuantity +' item'+')';
+    } else {
+      document.querySelector('.js-top-items').innerHTML = ' ('+ cartQuantity +' items'+')';
+
+    }
+  };
+  updateCheckout();
 
   document.querySelectorAll('.js-delete-link')
     .forEach((link) => {
@@ -128,7 +149,7 @@ export function renderOrderSummary() {
           `.js-cart-item-container-${productId}`
         );
         container.remove();
-
+        updateCheckout();
         renderPaymentSummary();
       });
     });
@@ -142,4 +163,6 @@ export function renderOrderSummary() {
         renderPaymentSummary();
       });
     });
+
+
 }
